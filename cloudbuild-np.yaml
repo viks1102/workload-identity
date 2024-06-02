@@ -1,0 +1,49 @@
+steps:
+  - name: gcr.io/cloud-builders/git
+    args:
+      - clone
+      - 'https://github.com/viks1102/gke-terraform.git'
+    dir: /workspace
+
+  # Initialize Terraform
+  - name: 'hashicorp/terraform:1.0.0'
+    args:
+      - '-c'
+      - |
+        cd /workspace/gke-terraform/nonprod/terraform
+        terraform init -reconfigure
+    id: Terraform Init Nonprod
+    entrypoint: sh
+
+  # Plan Terraform
+  - name: 'hashicorp/terraform:1.0.0'
+    args:
+      - '-c'
+      - |
+        cd /workspace/gke-terraform/nonprod/terraform
+        terraform plan -out=tfplan
+    id: Terraform Plan Nonprod
+    entrypoint: sh
+
+  # Apply Terraform in Nonprod
+  - name: 'hashicorp/terraform:1.0.0'
+    args: 
+      - '-c'
+      - |
+        cd /workspace/gke-terraform/nonprod/terraform
+        if [ "$BRANCH_NAME" == "main" ]; then
+          echo "Branch is main, applying Terraform plan."
+          terraform apply -auto-approve
+        else
+          echo "Branch is not main, skipping Terraform apply."
+        fi
+    id: Terraform Apply Nonprod
+    entrypoint: sh
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+substitutions:
+  _CLUSTER_NAME: 'gke-cluster-nonprod'
+  _CLUSTER_ZONE: 'us-central1-b'
+  _PROJECT_ID: 'dtonic-demo-k8s'
