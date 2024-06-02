@@ -1,12 +1,12 @@
-resource "kubernetes_service_account" "k8s_service_account" {
-  metadata {
-    name      = "kubernetes-${var.service_account_name}"
-    namespace = var.namespace
-    annotations = {
-      "iam.gke.io/gcp-service-account" = google_service_account.gsa.email
-    }
-  }
-}
+# resource "kubernetes_service_account" "k8s_service_account" {
+#   metadata {
+#     name      = "kubernetes-${var.service_account_name}"
+#     namespace = var.namespace
+#     annotations = {
+#       "iam.gke.io/gcp-service-account" = google_service_account.gsa.email
+#     }
+#   }
+# }
 
 resource "google_service_account" "gsa" {
   account_id   = "ksa-${var.service_account_name}"

@@ -2,7 +2,7 @@ steps:
   - name: gcr.io/cloud-builders/git
     args:
       - clone
-      - 'https://github.com/viks1102/gke-terraform.git'
+      - 'https://github.com/viks1102/workload-identity.git'
     dir: /workspace
 
   # Initialize Terraform
@@ -10,7 +10,7 @@ steps:
     args:
       - '-c'
       - |
-        cd /workspace/gke-terraform/nonprod/terraform
+        cd /workspace/workload-identity
         terraform init -reconfigure
     id: Terraform Init Nonprod
     entrypoint: sh
@@ -20,7 +20,7 @@ steps:
     args:
       - '-c'
       - |
-        cd /workspace/gke-terraform/nonprod/terraform
+        cd /workspace/workload-identity
         terraform plan -out=tfplan
     id: Terraform Plan Nonprod
     entrypoint: sh
@@ -30,7 +30,7 @@ steps:
     args: 
       - '-c'
       - |
-        cd /workspace/gke-terraform/nonprod/terraform
+        cd /workspace/workload-identity
         if [ "$BRANCH_NAME" == "main" ]; then
           echo "Branch is main, applying Terraform plan."
           terraform apply -auto-approve
