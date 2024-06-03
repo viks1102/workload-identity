@@ -40,9 +40,9 @@ resource "google_project_iam_binding" "logging_logwriter_role_binding" {
 }
 
 # Grant the roles/storage.objectViewer role to the service account
-resource "google_project_iam_binding" "bucket_viewer" {
+resource "google_project_iam_binding" "bucket_admin" {
   project = var.project_id
-  role    = "roles/storage.objectViewer"
+  role    = "roles/storage.admin"
   members = [
     "serviceAccount:${google_service_account.gsa.email}"
   ]
